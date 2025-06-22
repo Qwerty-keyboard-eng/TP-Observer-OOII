@@ -1,4 +1,7 @@
 package org.example;
 
-public class Observer {
+import java.time.LocalDateTime;
+
+public interface Observer {
+    void actualizar(String temperatura, LocalDateTime fecha);
 }

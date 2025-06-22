@@ -1,17 +1,28 @@
 package org.example;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        ClimaOnline weatherService = new WeatherChannelService();
+        MedidorObservable medidorBase = new MedidorBase(weatherService);
+        MedidorObservable medidorConObservadores = new MedidorObservableDecorator(medidorBase);
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+        Observer logObserver = new LogFileObserver("temperatura_log_decorator.txt");
+        Observer consoleObserver = new ConsoleObserver();
+
+        medidorConObservadores.agregarObservador(logObserver);
+        medidorConObservadores.agregarObservador(consoleObserver);
+
+        System.out.println("Iniciando lecturas de temperatura con Decorator + Observer...");
+        for (int i = 0; i < 5; i++) {
+            System.out.println("\n--- Lectura #" + (i + 1) + " ---");
+            medidorConObservadores.leerTemperatura();
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                System.err.println("Hilo interrumpido.");
+            }
         }
+        System.out.println("\nLecturas finalizadas.");
     }
 }

@@ -1,4 +1,5 @@
 package org.example;
 
-public class ClimaOnLine {
+public interface ClimaOnline {
+    String temperatura();
 }
